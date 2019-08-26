@@ -59,6 +59,17 @@ const UI = {
         // Translate the DOM
         l10n.translateDOM();
 
+        WebUtil.fetchJSON('../package.json')
+            .then((packageInfo) => {
+                Array.from(document.getElementsByClassName('noVNC_version')).forEach(el => el.innerText = packageInfo.version);
+            })
+            .catch((err) => {
+                Log.Error("Couldn't fetch package.json: " + err);
+                Array.from(document.getElementsByClassName('noVNC_version_wrapper'))
+                    .concat(Array.from(document.getElementsByClassName('noVNC_version_separator')))
+                    .forEach(el => el.style.display = 'none');
+            });
+
         // Adapt the interface for touch screen devices
         if (isTouchDevice) {
             document.documentElement.classList.add("noVNC_touch");
@@ -1009,7 +1020,6 @@ const UI = {
 
         UI.rfb = new RFB(document.getElementById('noVNC_container'), url,
                          { shared: UI.getSetting('shared'),
-                           showDotCursor: UI.getSetting('show_dot'),
                            repeaterID: UI.getSetting('repeaterID'),
                            credentials: { password: password } });
         UI.rfb.addEventListener("connect", UI.connectFinished);
@@ -1023,6 +1033,7 @@ const UI = {
         UI.rfb.clipViewport = UI.getSetting('view_clip');
         UI.rfb.scaleViewport = UI.getSetting('resize') === 'scale';
         UI.rfb.resizeSession = UI.getSetting('resize') === 'remote';
+        UI.rfb.showDotCursor = UI.getSetting('show_dot');
 
         UI.updateViewOnly(); // requires UI.rfb
     },

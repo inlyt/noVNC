@@ -60,8 +60,6 @@ export default class Display {
 
         Log.Debug("User Agent: " + navigator.userAgent);
 
-        this.clear();
-
         // Check canvas features
         if (!('createImageData' in this._drawCtx)) {
             throw new Error("Canvas does not support createImageData");
@@ -74,7 +72,6 @@ export default class Display {
 
         this._scale = 1.0;
         this._clipViewport = false;
-        this.logo = null;
 
         // ===== EVENT HANDLERS =====
 
@@ -300,17 +297,6 @@ export default class Display {
             this._damageBounds.left = this._damageBounds.top = 65535;
             this._damageBounds.right = this._damageBounds.bottom = 0;
         }
-    }
-
-    clear() {
-        if (this._logo) {
-            this.resize(this._logo.width, this._logo.height);
-            this.imageRect(0, 0, this._logo.type, this._logo.data);
-        } else {
-            this.resize(240, 20);
-            this._drawCtx.clearRect(0, 0, this._fb_width, this._fb_height);
-        }
-        this.flip();
     }
 
     pending() {
